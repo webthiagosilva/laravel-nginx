@@ -1,0 +1,52 @@
+version: '3'
+
+services:
+
+  web:
+    image: web
+    container_name: web
+    restart: unless-stopped
+    build:
+      context: ./docker/web
+      dockerfile: Dockerfile
+    volumes:
+      - ./www:/var/www      
+    ports:
+      - "80:80"
+    networks:
+      - docker-network
+
+  php:
+    image: php
+    container_name: php
+    restart: unless-stopped
+    build:
+      context: ./docker/php
+      dockerfile: Dockerfile
+      args:
+        user: admin
+        uid: 1000
+    volumes:
+      - ./www:/var/www
+    networks:
+      - docker-network
+
+  #db:
+  #  image: db
+  #  container_name: db
+  #  restart: unless-stopped
+  #  build:
+  #    context: ./docker/db
+  #    dockerfile: Dockerfile
+  #  environment:
+  #    - MARIADB_ROOT_PASSWORD=value
+  #  volumes:
+  #    - ./docker/db/data:/var/lib/mysql
+  #  ports:
+  #    - "3306:3306"
+  #  networks:
+  #    - docker-network
+
+networks:
+  docker-network:
+    driver: bridge
